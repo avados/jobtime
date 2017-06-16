@@ -24,12 +24,12 @@ import com.cle.jobtime.service.MainService;
 
 @EnableScheduling
 @Component
-public class EmailCron {
+public class EmailsCron {
 
 	private static final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY");
 
-	private static final Logger logger = LoggerFactory.getLogger(EmailCron.class);
+	private static final Logger logger = LoggerFactory.getLogger(EmailsCron.class);
 
 	@Autowired
 	private JavaMailSender mailSender;
