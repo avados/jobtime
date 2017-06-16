@@ -73,7 +73,7 @@ public class EmailCron {
 
 			try
 			{
-				helper.setTo("lefrancois.c@gmail.com");
+				helper.setTo(env.getProperty("email.perso"));
 
 				helper.setText(emailText, true);
 
