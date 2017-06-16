@@ -7,107 +7,17 @@ var AppViewModel = function()
 {
 	var self = this;
 
-	self.jobs = ko.observableArray();
-	self.selectedJob = ko.observable();
-	self.selectedJob.subscribe(function(newValue)
+	self.jobViewModel = ko.observable(new JobViewModel());
+	self.missionViewModel = ko.observable(new MissionViewModel());
+	self.projectViewModel = ko.observable(new ProjectViewModel());
+	self.taskTypeViewModel = ko.observable(new TaskTypeViewModel());
+	self.jobDoneViewModel = ko.observable(new JobDoneViewModel());
+
+	self.init = function()
 	{
-		if (typeof newValue != 'undefined')
-		{
-			self.missions(newValue.missions);
-			$(newValue.missions).each(function(index, value)
-			{
-				if (value.isDefault == true)
-				{
-					self.selectedMission(value);
-				}
-
-			});
-		}
-	})
-	self.missions = ko.observableArray();
-	self.selectedMission = ko.observable();
-	self.selectedMission.subscribe(function(newValue)
-	{
-		if (typeof newValue != 'undefined')
-		{
-			self.projects(newValue.projects);
-			$(newValue.projects).each(function(index, value)
-			{
-				if (value.isDefault == true)
-				{
-					self.selectedProject(value);
-				}
-
-			});
-
-		}
-	})
-	self.projects = ko.observableArray();
-	self.selectedProject = ko.observable();
-	self.note = ko.observable();
-	self.taskType = ko.observableArray();
-	self.selectedTaskType = ko.observable();
-	var d = new Date();
-	self.jddate = ko.observable(d.toISOString().substring(0, 10));
-	self.timespent = ko.observable();
-
-	var jobModel = function()
-	{
-		var that = this;
-		that.id = ko.observable();
-		that.name = ko.observable();
-		that.isDefault = ko.observable();
-		that.missions = ko.observableArray();
-
-		// that.imageFile.subscribe(function(newValue)
-		// {
-		// if (typeof newValue != 'undefined' && newValue != null)
-		// {
-		// self.saveSlot(that);
-		// }
-		// })
-		//
-		// that.fileSize = ko.computed(function()
-		// {
-		// var file = this.imageFile();
-		// return file ? file.size : 0;
-		// }, that);
-
-	};
-
-	var missionModel = function()
-	{
-		var that = this;
-		that.id = ko.observable();
-		that.name = ko.observable();
-		that.isDefault = ko.observable();
-		that.projects = ko.observableArray();
-	};
-
-	var projectModel = function()
-	{
-		var that = this;
-		that.id = ko.observable();
-		that.name = ko.observable();
-		that.isDefault = ko.observable();
-		that.jobdones = ko.observableArray();
-	};
-
-	var jobdoneModel = function()
-	{
-		var that = this;
-		that.id = ko.observable();
-		that.taskType = ko.observable();
-		that.note = ko.observable();
-		that.timeSpent = ko.observableArray();
-	};
-
-	var taskTypeModel = function()
-	{
-		var that = this;
-		that.id = ko.observable();
-		that.type = ko.observable();
-	};
+		self.getJobs();
+		self.getTaskType();
+	}
 
 	self.getTaskType = function()
 	{
@@ -124,16 +34,13 @@ var AppViewModel = function()
 			success : function(response, status, xhr)
 			{
 
-				if (typeof response != 'undefined')
-				{
-					self.taskType(response)
+				msgPublisher.notifySubscribers(response, 'taskTypeFromServer');
 
-				}
 				console.log(response)
 			},
 			error : function(response, status, xhr)
 			{
-				console.log("error getting jobs")
+				alert("error getting task types")
 			},
 		});
 	}
@@ -152,61 +59,21 @@ var AppViewModel = function()
 
 			success : function(response, status, xhr)
 			{
+				msgPublisher.notifySubscribers(response, 'jobsFromServer');
 
-				if (typeof response != 'undefined')
-				{
-					self.jobs(response)
-					$(response).each(function(index, value)
-					{
-						if (value.isDefault == true)
-						{
-							self.selectedJob(value);
-						}
-
-					});
-				}
 				console.log(response)
 			},
 			error : function(response, status, xhr)
 			{
-				console.log("error getting jobs")
+				alert("error getting jobs")
 			},
 		});
 	}
 
-	self.sendJobTime = function()
-	{
-		var jd = {
-			"timeSpent" : self.timespent(),
-			"date" : self.jddate(),
-			"note" : self.note(),
-			"taskType" : self.selectedTaskType(),
-			"project" : self.selectedProject()
-		}
-
-		$.ajax({
-			type : "POST",
-			dataType : "json",
-			contentType : "application/json",
-
-			url : _host + "/addJobDone",
-			data : JSON.stringify(jd),
-			success : function(response, status, xhr)
-			{
-				console.log("ok");
-			},
-			error : function(response, status, xhr)
-			{
-				console.log("ko");
-			},
-		});
-
-	}
 }
 
 var appViewModel = new AppViewModel();
 
 ko.applyBindings(appViewModel);
 
-appViewModel.getJobs();
-appViewModel.getTaskType();
+appViewModel.init();
