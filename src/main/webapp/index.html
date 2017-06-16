@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>MapyTrip</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="libs/jobtime.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="libs/bootstrap/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body id="page-top" class="index">
+	<div data-bind="with: appViewModel">
+	 <div class="col-sm-12 tenpxmarg" >
+                <select class="form-control " data-bind='options: jobs, value: selectedJob, optionsText: "name", optionsCaption: "Select..."'> </select>
+     </div>
+     <div class="col-sm-12 tenpxmarg" >
+                <select class="form-control " data-bind='options: missions, value: selectedMission, optionsText: "name", optionsCaption: "Select..."'> </select>
+      </div>
+     <div class="col-sm-12 tenpxmarg" >
+                <select class="form-control " data-bind='options: projects, value: selectedProject, optionsText: "name", optionsCaption: "Select..."'> </select>
+      </div>
+      <div class="col-sm-12 tenpxmarg" >
+                <select class="form-control " data-bind='options: taskType, value: selectedTaskType, optionsText: "type", optionsCaption: "Select..."'> </select>
+      </div>
+      
+      <div class="col-sm-12 tenpxmarg" >
+      	<input type="date" data-bind='value: jddate'/>
+      </div>
+      
+      <div class="col-sm-12 tenpxmarg" >
+      	<input type="number" data-bind='value: timespent'/>
+      </div>
+      
+     <div class="col-sm-12 tenpxmarg" > 
+      	<textarea class="form-control" rows="5" data-bind='textInput: note'></textarea>
+      </div>
+     
+    
+      <button type="button" data-bind="click: sendJobTime">OK</button>
+      
+      </div>
+    <!-- jQuery -->
+    <script src="libs/jquery-2.1.4.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="libs/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="libs/knockout-3.4.0.js" charset="utf-8"></script>
+    <script src="libs/knockout.validation.min.js" charset="utf-8"></script>
+
+	<script src="libs/jobtime.js"></script>
+</body>
+
+</html>
