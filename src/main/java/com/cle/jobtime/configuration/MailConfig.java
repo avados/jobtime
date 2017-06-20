@@ -19,8 +19,8 @@ public class MailConfig {
     public JavaMailSender javaMailService() {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
         //TODO read from ENV settings
-        final String username = env.getProperty("support.email");//"noreply@mapytrip.com";     // email address by which registered on zoho (another domain based)
-		final String password = env.getProperty("support.pwd");//"%jBpRfMQV3*&UT6R";
+        final String username = env.getProperty("support.email");
+		final String password = env.getProperty("support.pwd");
 		javaMailSender.setUsername(username);
 		javaMailSender.setPassword(password);
         javaMailSender.setJavaMailProperties(getMailProperties());
