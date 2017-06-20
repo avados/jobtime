@@ -18,6 +18,7 @@ import com.cle.jobtime.model.Job;
 import com.cle.jobtime.model.JobDone;
 import com.cle.jobtime.model.Mission;
 import com.cle.jobtime.model.Project;
+import com.cle.jobtime.model.RestException;
 import com.cle.jobtime.model.TaskType;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.MapperFeature;
@@ -26,7 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Service("mainService")
 @Transactional
 public class MainServiceImpl implements MainService {
-	// TODO add verifications and business logic
+	
 	@Autowired(required = true)
 	private MainDao dao;
 
@@ -34,36 +35,63 @@ public class MainServiceImpl implements MainService {
 	private static final Logger logger = LoggerFactory.getLogger(MainServiceImpl.class);
 
 	@Override
-	public String getJobs()
+	public String getJobsAsJson()
 	{
 		ObjectMapper om = new ObjectMapper();
 		om.disable(MapperFeature.DEFAULT_VIEW_INCLUSION);
 		String s = "{}";
 		try
 		{
-			s = om.writerWithView(com.cle.jobtime.model.JsonViews.JobMissionProject.class).writeValueAsString(dao.getJobs());
+			s = om.writerWithView(com.cle.jobtime.model.JsonViews.JobMissionProject.class).writeValueAsString(getJobs());
 		}
 		catch (JsonProcessingException e)
 		{
-			logger.debug("merde2",e);
+			logger.debug("getJobsAsJson",e);
 		}
 		return s;
 	}
+	
+	@Override
+	public List<Job> getJobs()
+	{
+		try
+		{
+			return dao.getJobs();
+		}
+		catch (Exception e)
+		{
+			logger.debug("getJobs",e);
+		}
+		return null;
+	}
 
 	@Override
-	public Job editJob(Job job)
+	public Job editJob(Job job) throws RestException
 	{
+		
 		UUID uid ;
 		if(job.getId() == null)
 		{
+			if(job.getName() == null || job.getName().trim().length() == 0)
+			{
+				throw new RestException("ko", "Nom incorrect");
+			}
+			for(Job _job : getJobs())
+			{
+				if(_job.getName().equals(job.getName()))
+				{
+					throw new RestException("ko", "Nom déjà utilisé");
+				}
+			}
 			uid = UUID.randomUUID();
 			job.setId(uid);
+			job.setDefault(true);
 			
 		}
-		else
-		{
-			uid =  dao.editJob(job);
-		}
+		
+		dao.setAllJobsDefaultFalse(job.getId());
+		uid =  dao.editJob(job);
+		
 		return dao.getJob(uid);
 	}
 
@@ -133,7 +161,7 @@ public class MainServiceImpl implements MainService {
 	}
 
 	@Override
-	public String getTaskType()
+	public String getTaskTypeAsJson()
 	{
 		ObjectMapper om = new ObjectMapper();
 		//om.disable(MapperFeature.DEFAULT_VIEW_INCLUSION);
@@ -144,15 +172,26 @@ public class MainServiceImpl implements MainService {
 		}
 		catch (JsonProcessingException e)
 		{
-			logger.debug("merde2",e);
+			logger.debug("getTaskType",e);
 		}
 		return s;	}
 
 	@Override
-	public void addJobDone(JobDone jd)
+	public void addJobDone(JobDone jd) throws RestException
 	{
-//		Project project = getProject(jd.getProject().getId());
-//		project.getJobdones().add(jd);
+
+		if(jd.getDate() == null || jd.getProject() == null || jd.getTaskType() == null || jd.getTimeSpent() == 0)
+		{
+			throw new RestException("ko", "Null value");
+		}
+		if(jd.getTaskType().getId() == null)
+		{
+			throw new RestException("ko", "incorrect Task type");
+		}
+		if(jd.getTimeSpent() % 0.25 != 0 || jd.getTimeSpent() > 24)
+		{
+			throw new RestException("ko", "Temps incorrect");
+		}
 		if(jd.getId() == null)
 		{
 			jd.setId(UUID.randomUUID());
@@ -170,6 +209,101 @@ public class MainServiceImpl implements MainService {
 	public List<Object[]> getSumByDaySince(Date firstDayOfWeekDate)
 	{
 		return dao.getSumByDaySince(firstDayOfWeekDate);
+	}
+
+	@Override
+	public Mission editMission(Mission mission) throws RestException
+	{
+		UUID uid ;
+		if(mission.getId() == null)
+		{
+			if(mission.getName() == null || mission.getName().trim().length() == 0)
+			{
+				throw new RestException("ko", "Nom incorrect");
+			}
+			if(mission.getJob() == null)
+			{
+				throw new RestException("ko", "Job requis");
+			}
+			Job _job = dao.getJob(mission.getJob().getId());
+			if(_job == null)
+			{
+				throw new RestException("ko", "Job non trouvé en BD");
+			}
+			for(Mission _mission : _job.getMissions())
+			{
+				if(_mission.getName().equals(mission.getName()))
+				{
+					throw new RestException("ko", "Nom déjà utilisé");
+				}
+			}
+			uid = UUID.randomUUID();
+			mission.setId(uid);
+			mission.setDefault(true);
+			
+		}
+		//TODO quand edition possible, alors verifier nom non null, etc...
+		dao.setAllMissionDefaultFalse(mission.getJob().getId(), mission.getId());
+		uid =  dao.editMission(mission);
+//		
+		return dao.getMission(uid);
+	}
+
+	@Override
+	public Project editProject(Project project) throws RestException
+	{
+		UUID uid ;
+		if(project.getId() == null)
+		{
+			if(project.getName() == null || project.getName().trim().length() == 0)
+			{
+				throw new RestException("ko", "Nom incorrect");
+			}
+			if(project.getMission() == null)
+			{
+				throw new RestException("ko", "Mission requise");
+			}
+			
+			Mission _mission = dao.getMission(project.getMission().getId());
+			if(_mission  == null)
+			{
+				throw new RestException("ko", "Mission non trouvée en BD");
+			}
+			
+			for(Project _project  : _mission.getProjects())
+			{
+				if(_project .getName().equals(project.getName()))
+				{
+					throw new RestException("ko", "Nom déjà utilisé");
+				}
+			}
+			uid = UUID.randomUUID();
+			project.setId(uid);
+			project.setDefault(true);
+			
+		}
+		//TODO quand edition possible, alors verifier nom non null, etc...
+		dao.setAllProjectDefaultFalse(project.getMission().getId(), project.getId());
+		uid =  dao.editProject(project);
+	
+		return dao.getProject(uid);
+	}
+
+	@Override
+	public TaskType editTaskType(TaskType taskType) throws RestException
+	{
+		UUID uid ;
+		if(taskType.getId() == null)
+		{
+			if(taskType.getType() == null || taskType.getType().trim().equals("") )
+			{
+				throw new RestException("ko", "Nom incorrect");
+			}
+			uid = UUID.randomUUID();
+			taskType.setId(uid);
+		}
+		uid = dao.editTaskType(taskType);
+		return dao.getTaskType(uid);
 	}
 
 	

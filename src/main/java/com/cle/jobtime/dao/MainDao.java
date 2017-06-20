@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import com.cle.jobtime.model.Job;
 import com.cle.jobtime.model.JobDone;
+import com.cle.jobtime.model.Mission;
 import com.cle.jobtime.model.Project;
 import com.cle.jobtime.model.TaskType;
 
@@ -27,4 +28,20 @@ public interface MainDao {
 	public List<JobDone> getJobDoneSince(Date firstDayOfWeekDate);
 	
 	public List<Object[]> getSumByDaySince(Date firstDayOfWeekDate);
+
+	public void setAllJobsDefaultFalse(UUID id);
+
+	public void setAllMissionDefaultFalse(UUID jobid, UUID missionid);
+
+	public UUID editMission(Mission mission);
+
+	public Mission getMission(UUID uid);
+
+	public void setAllProjectDefaultFalse(UUID missionId, UUID projectId);
+
+	public UUID editProject(Project project);
+
+	public UUID editTaskType(TaskType taskType);
+
+	public TaskType getTaskType(UUID uid);
 }

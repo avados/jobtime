@@ -1,7 +1,8 @@
-var MissionViewModel = function()
+var MissionViewModel = function(selectedJob)
 {
 	var self = this;
 
+	var _selectedJob = selectedJob;
 	var missionModel = function()
 	{
 		var that = this;
@@ -9,15 +10,43 @@ var MissionViewModel = function()
 		that.name = ko.observable();
 		that.isDefault = ko.observable();
 		that.projects = ko.observableArray();
+		that.job = ko.observable();
 	};
 
 	self.missions = ko.observableArray();
+	self.newMissionName = ko.observable();
 	self.selectedMission = ko.observable();
 	self.selectedMission.subscribe(function(newValue)
 	{
 		msgPublisher.notifySubscribers(newValue, 'selectedMissionUpdated');
 
 	})
+
+	self.addNewMission = function()
+	{
+		var newMission = new missionModel();
+		newMission.name(self.newMissionName());
+		newMission.job(selectedJob);
+
+		$.ajax({
+			type : "POST",
+			dataType : "json",
+			contentType : "application/json",
+
+			url : _host + "/editMission",
+			data : ko.toJSON(newMission),
+			success : function(response, status, xhr)
+			{
+				self.newMissionName(null);
+				msgPublisher.notifySubscribers(response, 'jobsFromServer');
+			},
+			error : function(response, status, xhr)
+			{
+				alert(response.responseJSON.message)
+			},
+		});
+
+	}
 
 	msgPublisher.subscribe(function(job)
 	{

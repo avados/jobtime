@@ -15,7 +15,9 @@
 		<hibernate.version>4.3.6.Final</hibernate.version>
 		<postgres.version>9.3-1100-jdbc41</postgres.version>
 		<mockito.version>1.10.19</mockito.version>
-		<jackson.version>2.2.2</jackson.version>
+<!-- 		<jackson.version>2.2.2</jackson.version> -->
+<jackson.version>2.6.0</jackson.version>
+<jackson-annotations-version>2.6.0</jackson-annotations-version>
 		<junit.version>4.12</junit.version>
 		<maven.test.skip>true</maven.test.skip>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -240,7 +242,11 @@
 			<artifactId>jackson-databind</artifactId>
 			<version>${jackson.version}</version>
 		</dependency>
-
+		<dependency>
+		<groupId>com.fasterxml.jackson.core</groupId>
+		  <artifactId>jackson-annotations</artifactId>
+		  <version>${jackson-annotations-version}</version>
+		</dependency>
 		<!-- resizing pictures -->
 		<dependency>
 			<groupId>org.imgscalr</groupId>

@@ -1,7 +1,8 @@
-var JobDoneViewModel = function()
+var JobDoneViewModel = function(selectedProject, selectedTaskType)
 {
 	var self = this;
-
+	self._selectedProject = selectedProject;
+	self._selectedTaskType = selectedTaskType;
 	// for jobDone
 	// self.note = ko.observable();
 
@@ -15,8 +16,9 @@ var JobDoneViewModel = function()
 		that.taskType = ko.observable();
 		that.note = ko.observable();
 		that.timeSpent = ko.observable();
-		var _d = new Date();
-		that.date = ko.observable(_d.toISOString().substring(0, 10));
+
+		that.date = ko.observable(new Date());
+		// that.date = ko.observable(_d.toISOString().substring(0, 10));
 		that.project = ko.observable();
 	};
 
@@ -24,6 +26,9 @@ var JobDoneViewModel = function()
 
 	self.sendJobTime = function()
 	{
+		self.currentJobDone.project(self._selectedProject);
+		self.currentJobDone.taskType(self._selectedTaskType);
+
 		$.ajax({
 			type : "POST",
 			dataType : "json",
@@ -38,6 +43,7 @@ var JobDoneViewModel = function()
 			error : function(response, status, xhr)
 			{
 				console.log("ko");
+				alert(response.responseJSON.message);
 			},
 		});
 

@@ -12,6 +12,8 @@ var JobViewModel = function()
 
 	};
 
+	self.newJobName = ko.observable();
+
 	self.jobs = ko.observableArray();
 	self.selectedJob = ko.observable();
 	self.selectedJob.subscribe(function(job)
@@ -19,6 +21,31 @@ var JobViewModel = function()
 		msgPublisher.notifySubscribers(job, 'selectedJobUpdated');
 
 	})
+
+	self.addNewJob = function()
+	{
+		var newJob = new jobModel();
+		newJob.name(self.newJobName());
+
+		$.ajax({
+			type : "POST",
+			dataType : "json",
+			contentType : "application/json",
+
+			url : _host + "/editJob",
+			data : ko.toJSON(newJob),
+			success : function(response, status, xhr)
+			{
+				self.newJobName(null);
+				msgPublisher.notifySubscribers(response, 'jobsFromServer');
+			},
+			error : function(response, status, xhr)
+			{
+				alert(response.responseJSON.message)
+			},
+		});
+
+	}
 
 	msgPublisher.subscribe(function(jobs)
 	{

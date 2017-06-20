@@ -23,34 +23,132 @@
 
 <body id="page-top" class="index">
 	<div data-bind="with: appViewModel">
-		 <div class="col-sm-12 tenpxmarg" >
-	                <select class="form-control " data-bind='options: jobViewModel().jobs, value: jobViewModel().selectedJob, optionsText: "name", optionsCaption: "Select..."'> </select>
-	     </div>
-	     <div class="col-sm-12 tenpxmarg" >
-	                <select class="form-control " data-bind='options: missionViewModel().missions, value: missionViewModel().selectedMission, optionsText: "name", optionsCaption: "Select..."'> </select>
-	      </div>
-	     <div class="col-sm-12 tenpxmarg" >
-	                <select class="form-control " data-bind='options: projectViewModel().projects, value: projectViewModel().selectedProject, optionsText: "name", optionsCaption: "Select..."'> </select>
-	      </div>
-	      <div class="col-sm-12 tenpxmarg" >
-	                <select class="form-control " data-bind='options: taskTypeViewModel().taskType, value: taskTypeViewModel().selectedTaskType, optionsText: "type", optionsCaption: "Select..."'> </select>
-	      </div>
-	      
-	      <div class="col-sm-12 tenpxmarg" >
-	      	<input type="date" data-bind='value: jobDoneViewModel().currentJobDone.date'/>
-	      </div>
-	      
-	      <div class="col-sm-12 tenpxmarg" >
-	      	<input type="number" data-bind='value: jobDoneViewModel().currentJobDone.timespent'/>
-	      </div>
-	      
-	     <div class="col-sm-12 tenpxmarg" > 
-	      	<textarea class="form-control" rows="5" data-bind='textInput: jobDoneViewModel().currentJobDone.note'></textarea>
-	      </div>
-	     
+	
+		<div class="col-sm-12 tenpxmarg" >
+		                <select class="form-control " data-bind='options: actions, value: selectedAction, optionsText: "name"'> </select>
+	    </div>
 	    
-	      <button type="button" data-bind="click: jobDoneViewModel().sendJobTime">OK</button>
-	      
+	    <!-- ko if: selectedAction().id == 'addTaskType'   -->
+	    	<div class="col-sm-12 tenpxmarg" >
+	    	
+	    	
+		      	<input data-bind='value: taskTypeViewModel().newTaskType'/>
+		      	<p>
+	    		<button type="button" data-bind="click: taskTypeViewModel().addNewTaskType">Ajouter</button>
+	    		<p>
+	    		Type de taches
+	    		<div data-bind='foreach: taskTypeViewModel().taskType'> 
+                	<span data-bind="text: type" ></span>
+                	<p>
+                </div>
+	    	</div>
+	    <!-- /ko -->
+	    
+	    <!-- ko if: selectedAction().id == 'addProject'   -->
+	    	<div class="col-sm-12 tenpxmarg" >
+	    		
+	    		<div class="col-sm-12 tenpxmarg" >
+		                <select class="form-control " data-bind='options: jobViewModel().jobs, value: jobViewModel().selectedJob, optionsText: "name", optionsCaption: "Select..."'> </select>
+		     	</div>
+		     	
+		     	<!-- ko if: typeof appViewModel.jobViewModel().selectedJob() != 'undefined' -->
+		     	<div class="col-sm-12 tenpxmarg" >
+		                <select class="form-control " data-bind='options: missionViewModel().missions, value: missionViewModel().selectedMission, optionsText: "name", optionsCaption: "Select..."'> </select>
+		      	</div>
+		     	<!-- /ko -->
+	    		<!-- ko if: typeof appViewModel.jobViewModel().selectedJob() != 'undefined' &&  typeof appViewModel.missionViewModel().selectedMission() != 'undefined'  -->
+	    		<div class="col-sm-12 tenpxmarg" >
+		      		<input data-bind='value: projectViewModel().newProjectName'/>
+		      	</div>
+	    		<button type="button" data-bind="click: projectViewModel().addNewProject">Ajouter</button>
+	    		<p>
+	    		
+	    		<div >Liste des projets:</div> <p>
+                <div data-bind='foreach: missionViewModel().selectedMission().projects'> 
+                	 
+                	<span data-bind="text: name" ></span>
+                	<input type="checkbox" disabled data-bind="checked: isDefault" />
+                	<p>
+                </div>
+                
+                <!-- /ko -->
+		     </div>
+	    
+	    <!-- /ko -->
+	    
+	    <!-- ko if: selectedAction().id == 'addMission' && typeof appViewModel.jobViewModel().selectedJob() != 'undefined' -->
+	    	<div class="col-sm-12 tenpxmarg" >
+	    		
+	    		<div class="col-sm-12 tenpxmarg" >
+		                <select class="form-control " data-bind='options: jobViewModel().jobs, value: jobViewModel().selectedJob, optionsText: "name", optionsCaption: "Select..."'> </select>
+		     	</div>
+		     
+	    		<div class="col-sm-12 tenpxmarg" >
+		      		<input data-bind='value: missionViewModel().newMissionName'/>
+		      	</div>
+	    		<button type="button" data-bind="click: missionViewModel().addNewMission">Ajouter</button>
+	    		<p>
+	    		<div >Liste des missions:</div> <p>
+                <div data-bind='foreach: jobViewModel().selectedJob().missions'> 
+                	 
+                	<span data-bind="text: name" ></span>
+                	<input type="checkbox" disabled data-bind="checked: isDefault" />
+                	<p>
+                </div>
+		     </div>
+	    
+	    <!-- /ko -->
+	    
+	    <!-- ko if: selectedAction().id == 'addJob' -->
+	    	<div class="col-sm-12 tenpxmarg" >
+	    		
+	    		<div class="col-sm-12 tenpxmarg" >
+		      		<input data-bind='value: jobViewModel().newJobName'/>
+		      	</div>
+	    		<button type="button" data-bind="click: jobViewModel().addNewJob">Ajouter</button>
+	    		<p>
+	    		<div >Liste des jobs:</div> <p>
+                <div data-bind='foreach: jobViewModel().jobs'> 
+                	 
+                	<span data-bind="text: name" ></span>
+                	<input type="checkbox" disabled data-bind="checked: isDefault" />
+                	<p>
+                </div>
+		     </div>
+	    
+	    <!-- /ko -->
+	    
+	    
+		<!-- ko if: selectedAction().id == 'addJobDone' -->
+			 <div class="col-sm-12 tenpxmarg" >
+		                <select class="form-control " data-bind='options: jobViewModel().jobs, value: jobViewModel().selectedJob, optionsText: "name", optionsCaption: "Select..."'> </select>
+		     </div>
+		     <div class="col-sm-12 tenpxmarg" >
+		                <select class="form-control " data-bind='options: missionViewModel().missions, value: missionViewModel().selectedMission, optionsText: "name", optionsCaption: "Select..."'> </select>
+		      </div>
+		     <div class="col-sm-12 tenpxmarg" >
+		                <select class="form-control " data-bind='options: projectViewModel().projects, value: projectViewModel().selectedProject, optionsText: "name", optionsCaption: "Select..."'> </select>
+		      </div>
+		      <div class="col-sm-12 tenpxmarg" >
+		                <select class="form-control " data-bind='options: taskTypeViewModel().taskType, value: taskTypeViewModel().selectedTaskType, optionsText: "type", optionsCaption: "Select..."'> </select>
+		      </div>
+		      
+		      <div class="col-sm-12 tenpxmarg" >
+		      	<input type="date" data-bind='date: jobDoneViewModel().currentJobDone.date'/>
+		      </div>
+		      
+		      <div class="col-sm-12 tenpxmarg" >
+		      	<input type="number" data-bind='value: jobDoneViewModel().currentJobDone.timeSpent'/>
+		      </div>
+		      
+		     <div class="col-sm-12 tenpxmarg" > 
+		      	<textarea class="form-control" rows="5" data-bind='textInput: jobDoneViewModel().currentJobDone.note'></textarea>
+		      </div>
+		     
+		    
+		      <button type="button" data-bind="click: jobDoneViewModel().sendJobTime">OK</button>
+		     
+	     <!-- /ko --> 
     </div>
     <!-- jQuery -->
     <script src="libs/jquery-2.1.4.min.js"></script>
@@ -59,8 +157,11 @@
     <script src="libs/bootstrap/js/bootstrap.min.js"></script>
 
     <!-- Custom Theme JavaScript -->
+    <script src="libs/moment.min.js" charset="utf-8"></script>
     <script src="libs/knockout-3.4.0.js" charset="utf-8"></script>
     <script src="libs/knockout.validation.min.js" charset="utf-8"></script>
+    <script src="libs/knockout-date-bindings.js" charset="utf-8"></script>
+    
 
 	<script src="libs/job.js"></script>
 	<script src="libs/jobdone.js"></script>

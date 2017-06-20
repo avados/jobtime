@@ -19,6 +19,7 @@ import org.springframework.stereotype.Repository;
 
 import com.cle.jobtime.model.Job;
 import com.cle.jobtime.model.JobDone;
+import com.cle.jobtime.model.Mission;
 import com.cle.jobtime.model.Project;
 import com.cle.jobtime.model.TaskType;
 
@@ -102,5 +103,64 @@ public class MainDaoImpl implements MainDao {
 		Query query=getSession().createQuery("select date, sum(timeSpent) from JobDone where date >= :mydate group by date");
 		query.setDate("mydate", firstDayOfWeekDate);
 		return query.list();
+	}
+
+	@Override
+	public void setAllJobsDefaultFalse(UUID id)
+	{
+		Query query = getSession().createSQLQuery("update Job set isDefault = false where  id != CAST(:id AS uuid)");
+		query.setString("id", id.toString());		
+		query.executeUpdate();
+	}
+
+	@Override
+	public void setAllMissionDefaultFalse( UUID missionid, UUID projectId)
+	{
+		Query query = getSession().createSQLQuery("update Mission set isDefault = false where  id != CAST(:projectId AS uuid) AND mission_id = CAST(:mission_id AS uuid)");
+		query.setString("mission_id", missionid.toString());
+		query.setString("projectId", projectId.toString());
+		query.executeUpdate();
+	}
+
+	@Override
+	public UUID editMission(Mission mission)
+	{
+		getSession().saveOrUpdate(mission);
+		return mission.getId() ;	
+	}
+
+	@Override
+	public Mission getMission(UUID uid)
+	{
+		// TODO refactor to use only one method for all classes, not one by class
+		return (Mission) getSession().get(Mission.class, uid);	
+	}
+
+	@Override
+	public void setAllProjectDefaultFalse( UUID missionId, UUID projectId)
+	{
+		Query query = getSession().createSQLQuery("update Project set isDefault = false where  id != CAST(:projectid AS uuid) AND mission_id = CAST(:missionId AS uuid)");
+		query.setString("missionId", missionId.toString());
+		query.setString("projectid", projectId.toString());
+		query.executeUpdate();
+	}
+
+	@Override
+	public UUID editProject(Project project)
+	{
+		getSession().saveOrUpdate(project);
+		return project.getId() ;	}
+
+	@Override
+	public UUID editTaskType(TaskType taskType)
+	{
+		getSession().saveOrUpdate(taskType);
+		return taskType.getId() ;	
+	}
+
+	@Override
+	public TaskType getTaskType(UUID uid)
+	{
+		return (TaskType) getSession().get(TaskType.class, uid);
 	}
 }

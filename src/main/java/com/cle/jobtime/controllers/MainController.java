@@ -1,5 +1,7 @@
 package com.cle.jobtime.controllers;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -19,6 +21,8 @@ import com.cle.jobtime.model.Job;
 import com.cle.jobtime.model.JobDone;
 import com.cle.jobtime.model.Mission;
 import com.cle.jobtime.model.Project;
+import com.cle.jobtime.model.RestException;
+import com.cle.jobtime.model.TaskType;
 import com.cle.jobtime.service.MainService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -50,15 +54,13 @@ public class MainController {
 	{
 		try
 		{	  
-//			mainService.editJob(null);
-			
-			String jobs=  mainService.getJobs();
+			String jobs=  mainService.getJobsAsJson();
 			
 			return new ResponseEntity<String>(jobs, HttpStatus.OK);
 		}
 		catch (Exception e)
 		{
-			logger.debug("merde",e );
+			logger.debug("getJobs",e );
 		}
 		
 		return null;		
@@ -69,13 +71,13 @@ public class MainController {
 	{
 		try
 		{	  
-			String taskTypes=  mainService.getTaskType();
+			String taskTypes=  mainService.getTaskTypeAsJson();
 			
 			return new ResponseEntity<String>(taskTypes, HttpStatus.OK);
 		}
 		catch (Exception e)
 		{
-			logger.debug("merde",e );
+			logger.debug("getTaskType",e );
 		}
 		
 		return null;		
@@ -88,21 +90,132 @@ public class MainController {
 		{	  
 			ObjectMapper mapper = new ObjectMapper();
 
+//			final DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+//			mapper.setDateFormat(df);
+			
 			// String s = mapper.writeValueAsString(user);
 			JobDone jd = mapper.readValue(httpEntity.getBody(), JobDone.class);
-			if(jd.getDate() == null || jd.getProject() == null || jd.getTaskType() == null || jd.getTimeSpent() == 0)
-			{
-				return new ResponseEntity<String>("{}", HttpStatus.BAD_REQUEST);
-			}
+			
 //			Project project = mainService.getProject(java.util.UUID uuid);
 //Mission mission = jd.getProject().getMission();
 			mainService.addJobDone(jd);
 			return new ResponseEntity<String>("{}", HttpStatus.OK);
 		}
+		catch (RestException e)
+		{
+			logger.debug("addJobDone",e );
+			return RestException.errorResponseEntity(e);
+		}
 		catch (Exception e)
 		{
-			logger.debug("merde",e );
+			logger.debug("addJobDone",e );
 		}
 		return new ResponseEntity<String>("{}", HttpStatus.BAD_REQUEST);
 	}
+	
+	@RequestMapping(value = "/editJob", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<String> editJob(HttpEntity<String> httpEntity, WebRequest request)
+	{
+		try
+		{	  
+			ObjectMapper mapper = new ObjectMapper();
+
+			Job job = mapper.readValue(httpEntity.getBody(), Job.class);
+			
+			mainService.editJob(job);
+			
+			
+			return new ResponseEntity<String>(mainService.getJobsAsJson(), HttpStatus.OK);
+		}
+		catch (RestException e)
+		{
+			logger.debug("addJob",e );
+			return RestException.errorResponseEntity(e);
+		}
+		catch (Exception e)
+		{
+			logger.debug("addJob",e );
+		}
+		return new ResponseEntity<String>("{}", HttpStatus.BAD_REQUEST);
+	}
+	
+	@RequestMapping(value = "/editMission", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<String> editMission(HttpEntity<String> httpEntity, WebRequest request)
+	{
+		try
+		{	  
+			ObjectMapper mapper = new ObjectMapper();
+
+			Mission mission = mapper.readValue(httpEntity.getBody(), Mission.class);
+			
+			mainService.editMission(mission);
+			
+			
+			return new ResponseEntity<String>(mainService.getJobsAsJson(), HttpStatus.OK);
+		}
+		catch (RestException e)
+		{
+			logger.debug("editMission",e );
+			return RestException.errorResponseEntity(e);
+		}
+		catch (Exception e)
+		{
+			logger.debug("editMission",e );
+		}
+		return new ResponseEntity<String>("{}", HttpStatus.BAD_REQUEST);
+	}
+	
+	@RequestMapping(value = "/editProject", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<String> editProject(HttpEntity<String> httpEntity, WebRequest request)
+	{
+		try
+		{	  
+			ObjectMapper mapper = new ObjectMapper();
+
+			Project project= mapper.readValue(httpEntity.getBody(), Project.class);
+			
+			mainService.editProject(project);
+			
+			
+			return new ResponseEntity<String>(mainService.getJobsAsJson(), HttpStatus.OK);
+		}
+		catch (RestException e)
+		{
+			logger.debug("editMission",e );
+			return RestException.errorResponseEntity(e);
+		}
+		catch (Exception e)
+		{
+			logger.debug("editMission",e );
+		}
+		return new ResponseEntity<String>("{}", HttpStatus.BAD_REQUEST);
+	}
+
+	
+	@RequestMapping(value = "/editTaskType", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<String> editTaskType(HttpEntity<String> httpEntity, WebRequest request)
+	{
+		try
+		{	  
+			ObjectMapper mapper = new ObjectMapper();
+
+			TaskType taskType= mapper.readValue(httpEntity.getBody(), TaskType.class);
+			
+			mainService.editTaskType(taskType);
+			
+			
+			return new ResponseEntity<String>(mainService.getTaskTypeAsJson(), HttpStatus.OK);
+		}
+		catch (RestException e)
+		{
+			logger.debug("editTaskType",e );
+			return RestException.errorResponseEntity(e);
+		}
+		catch (Exception e)
+		{
+			logger.debug("editTaskType",e );
+		}
+		return new ResponseEntity<String>("{}", HttpStatus.BAD_REQUEST);
+	}
+	
 }
