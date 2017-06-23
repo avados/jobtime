@@ -38,6 +38,9 @@ var JobDoneViewModel = function(selectedProject, selectedTaskType)
 			data : ko.toJSON(self.currentJobDone),
 			success : function(response, status, xhr)
 			{
+				self.currentJobDone.note(undefined);
+				self.currentJobDone.timeSpent(undefined);
+
 				console.log("ok");
 			},
 			error : function(response, status, xhr)

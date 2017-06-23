@@ -7,8 +7,8 @@ var AppViewModel = function()
 {
 	var self = this;
 	var defaultAction = {
-		id : "addTaskType",
-		name : "Ajouter un type de tache"
+		id : "addJobDone",
+		name : "Ajouter un temps"
 	};
 	self.actions = ko.observableArray([ {
 		id : "addJob",
@@ -17,8 +17,8 @@ var AppViewModel = function()
 		id : "addMission",
 		name : "Ajouter une mission"
 	}, {
-		id : "addJobDone",
-		name : "Ajouter un temps"
+		id : "addTaskType",
+		name : "Ajouter un type de tache"
 	}, {
 		id : "addProject",
 		name : "Ajouter un projet"

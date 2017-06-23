@@ -41,7 +41,11 @@ var JobViewModel = function()
 			},
 			error : function(response, status, xhr)
 			{
-				alert(response.responseJSON.message)
+				if (typeof response.responseJSON != 'undefined')
+				{
+					alert(response.responseJSON.message)
+				}
+				console.log("error");
 			},
 		});
 

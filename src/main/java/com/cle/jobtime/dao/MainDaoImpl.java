@@ -114,11 +114,11 @@ public class MainDaoImpl implements MainDao {
 	}
 
 	@Override
-	public void setAllMissionDefaultFalse( UUID missionid, UUID projectId)
+	public void setAllMissionDefaultFalse( UUID jobId, UUID missionid)
 	{
-		Query query = getSession().createSQLQuery("update Mission set isDefault = false where  id != CAST(:projectId AS uuid) AND mission_id = CAST(:mission_id AS uuid)");
-		query.setString("mission_id", missionid.toString());
-		query.setString("projectId", projectId.toString());
+		Query query = getSession().createSQLQuery("update Mission set isDefault = false where  id != CAST(:missionId AS uuid) AND job_id = CAST(:job_id AS uuid)");
+		query.setString("missionId", missionid.toString());
+		query.setString("job_id", jobId.toString());
 		query.executeUpdate();
 	}
 
