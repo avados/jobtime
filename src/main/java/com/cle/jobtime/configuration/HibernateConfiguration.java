@@ -59,7 +59,7 @@ public class HibernateConfiguration {
 
 		properties.put("hibernate.format_sql", environment.getRequiredProperty("hibernate.c3p0.min_size"));
 		properties.put("hibernate.format_sql", environment.getRequiredProperty("hibernate.c3p0.timeout"));
-
+				
 //		properties.put("hibernate.connection.useUnicode", "true");
 		//properties.put("hibernate.connection.useUnicode", true);
 		properties.put("hibernate.connection.charSet", "utf8");

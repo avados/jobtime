@@ -20,14 +20,14 @@ public class AppInitializer implements WebApplicationInitializer {
 	      encodingFilter.setInitParameter("forceEncoding", "false");
 	      encodingFilter.addMappingForUrlPatterns(null, false, "/*");
 
-	      final String activeProfile = System.getenv("spring.profiles.active");
-	      if(activeProfile == null)
-	      {
-	    	  logger.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-	    	  logger.error("! NO PROFILE DETECTED, FALLING BACK TO DEFAULT DEV ENV !");
-	    	  logger.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-	    	  servletContext.setInitParameter("spring.profiles.active", "DEV"); 
-	      }
+//	      final String activeProfile = System.getenv("spring.profiles.active");
+//	      if(activeProfile == null)
+//	      {
+//	    	  logger.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+//	    	  logger.error("! NO PROFILE DETECTED, FALLING BACK TO DEFAULT DEV ENV !");
+//	    	  logger.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+//	    	  servletContext.setInitParameter("spring.profiles.active", "DEV"); 
+//	      }
 	      
       }
 	 
