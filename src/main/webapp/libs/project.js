@@ -17,11 +17,28 @@ var ProjectViewModel = function(selectedMission)
 	self.selectedProject = ko.observable();
 	self.newProjectName = ko.observable();
 
-	self.addNewProject = function()
+	self.setDefault = function(clicked)
 	{
-		var newProject = new projectModel();
-		newProject.name(self.newProjectName());
-		newProject.mission(self._selectedMission);
+		clicked.isDefault = true;
+		self.addNewProject(clicked);
+	}
+
+	self.addNewProject = function(updated, kovariable)
+	{
+		var newProject;
+		// when called by ko, both parameters are defined, when called by myself, only one
+		if (typeof kovariable == 'undefined')
+		{
+			// existing project
+			newProject = updated;
+		}
+		else
+		{
+			// new project
+			newProject = new projectModel();
+			newProject.name(self.newProjectName());
+			newProject.mission(self._selectedMission);
+		}
 
 		$.ajax({
 			type : "POST",

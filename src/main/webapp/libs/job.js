@@ -22,10 +22,26 @@ var JobViewModel = function()
 
 	})
 
-	self.addNewJob = function()
+	self.setDefault = function(clicked)
 	{
-		var newJob = new jobModel();
-		newJob.name(self.newJobName());
+		clicked.isDefault = true;
+		self.addNewJob(clicked);
+	}
+
+	self.addNewJob = function(updated, kovariable)
+	{
+		var newJob;
+		// when called by ko, both parameters are defined, when called by myself, only one
+		if (typeof kovariable == 'undefined')
+		{
+			// existing project
+			newJob = updated;
+		}
+		else
+		{
+			newJob = new jobModel();
+			newJob.name(self.newJobName());
+		}
 
 		$.ajax({
 			type : "POST",

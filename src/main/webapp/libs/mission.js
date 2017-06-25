@@ -22,11 +22,26 @@ var MissionViewModel = function(selectedJob)
 
 	})
 
-	self.addNewMission = function()
+	self.setDefault = function(clicked)
 	{
-		var newMission = new missionModel();
-		newMission.name(self.newMissionName());
-		newMission.job(selectedJob);
+		clicked.isDefault = true;
+		self.addNewMission(clicked);
+	}
+
+	self.addNewMission = function(updated, kovariable)
+	{
+		var newMission;
+		if (typeof kovariable == 'undefined')
+		{
+			// existing project
+			newMission = updated;
+		}
+		else
+		{
+			newMission = new missionModel();
+			newMission.name(self.newMissionName());
+			newMission.job(selectedJob);
+		}
 
 		$.ajax({
 			type : "POST",

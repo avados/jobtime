@@ -42,7 +42,7 @@ public class Project implements Serializable{
 	@Id
 	@Type(type="pg-uuid")
 	@JsonView(JsonViews.JobMissionProject.class)
-	public java.util.UUID  id;
+	private java.util.UUID  id;
 	
 	
 	public Project() {

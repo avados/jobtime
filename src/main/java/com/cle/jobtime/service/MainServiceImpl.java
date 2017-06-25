@@ -86,11 +86,23 @@ public class MainServiceImpl implements MainService {
 			uid = UUID.randomUUID();
 			job.setId(uid);
 			job.setDefault(true);
-			
+
+			dao.setAllJobsDefaultFalse(job.getId());
+			uid =  dao.editJob(job);
+		}
+		else
+		{
+			Job oldJob = dao.getJob(job.getId());
+			if(job.isDefault()  && !oldJob.isDefault())
+			{
+				dao.setAllJobsDefaultFalse(job.getId());
+			}
+			oldJob.setDefault(job.isDefault());
+			oldJob.setName(job.getName());
+
+			uid =  dao.editJob(oldJob);
 		}
 		
-		dao.setAllJobsDefaultFalse(job.getId());
-		uid =  dao.editJob(job);
 		
 		return dao.getJob(uid);
 	}
@@ -241,10 +253,22 @@ public class MainServiceImpl implements MainService {
 			mission.setId(uid);
 			mission.setDefault(true);
 			
+			dao.setAllMissionDefaultFalse(mission.getJob().getId(), mission.getId());
+			uid =  dao.editMission(mission);
+		}
+		else
+		{
+			Mission oldMission = dao.getMission(mission.getId());
+			if(mission.isDefault()  && !oldMission.isDefault())
+			{
+				dao.setAllMissionDefaultFalse(oldMission.getJob().getId(), mission.getId());
+			}
+			oldMission.setDefault(mission.isDefault());
+			oldMission.setName(mission.getName());
+			uid =  dao.editMission(oldMission);
 		}
 		//TODO quand edition possible, alors verifier nom non null, etc...
-		dao.setAllMissionDefaultFalse(mission.getJob().getId(), mission.getId());
-		uid =  dao.editMission(mission);
+		
 //		
 		return dao.getMission(uid);
 	}
@@ -280,11 +304,23 @@ public class MainServiceImpl implements MainService {
 			uid = UUID.randomUUID();
 			project.setId(uid);
 			project.setDefault(true);
-			
+			dao.setAllProjectDefaultFalse(project.getMission().getId(), project.getId());
+			uid =  dao.editProject(project);
+		}
+		else
+		{
+			Project oldProject = dao.getProject(project.getId());
+			if(project.isDefault()  && !oldProject.isDefault())
+			{
+				dao.setAllProjectDefaultFalse(oldProject.getMission().getId(), project.getId());
+			}
+			oldProject.setDefault(project.isDefault());
+			oldProject.setName(project.getName());
+			uid =  dao.editProject(oldProject);
 		}
 		//TODO quand edition possible, alors verifier nom non null, etc...
-		dao.setAllProjectDefaultFalse(project.getMission().getId(), project.getId());
-		uid =  dao.editProject(project);
+		
+		
 	
 		return dao.getProject(uid);
 	}

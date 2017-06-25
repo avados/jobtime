@@ -32,11 +32,12 @@
 	    	<div class="col-sm-12 tenpxmarg" >
 	    	
 	    	
-		      	<input data-bind='value: taskTypeViewModel().newTaskType'/>
-		      	<p>
-	    		<button type="button" data-bind="click: taskTypeViewModel().addNewTaskType">Ajouter</button>
-	    		<p>
-	    		Type de taches
+		      	<input class="form-control" placeholder="Type de tache..." data-bind='value: taskTypeViewModel().newTaskType'/>
+		      	<div class="tenpxmarg">
+	    		<button  class="btn btn-primary form-control"  type="button" data-bind="click: taskTypeViewModel().addNewTaskType">Ajouter</button>
+	    		</div>
+	    		<div class="tenpxmarg">Type de taches</div>
+	    		
 	    		<div data-bind='foreach: taskTypeViewModel().taskType'> 
                 	<span data-bind="text: type" ></span>
                 	<p>
@@ -47,30 +48,46 @@
 	    <!-- ko if: selectedAction().id == 'addProject'   -->
 	    	<div class="col-sm-12 tenpxmarg" >
 	    		
-	    		<div class="col-sm-12 tenpxmarg" >
+	    		<div class="tenpxmarg" >
 		                <select class="form-control " data-bind='options: jobViewModel().jobs, value: jobViewModel().selectedJob, optionsText: "name", optionsCaption: "Select..."'> </select>
 		     	</div>
 		     	
 		     	<!-- ko if: typeof appViewModel.jobViewModel().selectedJob() != 'undefined' -->
-		     	<div class="col-sm-12 tenpxmarg" >
+		     	
+			     	<div class="tenpxmarg">
 		                <select class="form-control " data-bind='options: missionViewModel().missions, value: missionViewModel().selectedMission, optionsText: "name", optionsCaption: "Select..."'> </select>
-		      	</div>
-		     	<!-- /ko -->
+			      	 	
+			      	</div>
+		      	<!-- /ko -->
 	    		<!-- ko if: typeof appViewModel.jobViewModel().selectedJob() != 'undefined' &&  typeof appViewModel.missionViewModel().selectedMission() != 'undefined'  -->
-	    		<div class="col-sm-12 tenpxmarg" >
-		      		<input data-bind='value: projectViewModel().newProjectName'/>
+	    		<div class=" tenpxmarg" >
+		      		<input class="form-control " placeholder="Entrer un nom..." data-bind='value: projectViewModel().newProjectName'/>
 		      	</div>
-	    		<button type="button" data-bind="click: projectViewModel().addNewProject">Ajouter</button>
+	    		<button class="btn btn-primary form-control tenpxmarg"  type="button" data-bind="click: projectViewModel().addNewProject">Ajouter</button>
 	    		<p>
 	    		
-	    		<div >Liste des projets:</div> <p>
-                <div data-bind='foreach: missionViewModel().selectedMission().projects'> 
-                	 
-                	<span data-bind="text: name" ></span>
-                	<input type="checkbox" disabled data-bind="checked: isDefault" />
-                	<p>
-                </div>
-                
+	    		
+	    		<table class="table table-striped table-bordered">
+	    			<thead>
+				        <tr>
+				        	<th class="col-xs-10">Liste des projets</th>
+				        </tr>
+				        
+				    </thead>
+	                <tbody data-bind='foreach: missionViewModel().selectedMission().projects'> 
+	                	 
+	                	
+	                	<tr>
+				            <td class="col-xs-10" data-bind="text: name"></td>
+				            <td class="col-xs-1">
+				            	<input type="checkbox" disabled data-bind="checked: isDefault" />
+			            	</td>
+				            <td class="col-xs-1">
+				        		<button class="btn btn-default" type="button" data-bind="click: $parent.projectViewModel().setDefault, disable :isDefault">Défaut</button>
+			      			</td>
+				        </tr>
+	                </tbody>
+                </table>
                 <!-- /ko -->
 		     </div>
 	    
@@ -79,22 +96,35 @@
 	    <!-- ko if: selectedAction().id == 'addMission' && typeof appViewModel.jobViewModel().selectedJob() != 'undefined' -->
 	    	<div class="col-sm-12 tenpxmarg" >
 	    		
-	    		<div class="col-sm-12 tenpxmarg" >
-		                <select class="form-control " data-bind='options: jobViewModel().jobs, value: jobViewModel().selectedJob, optionsText: "name", optionsCaption: "Select..."'> </select>
-		     	</div>
-		     
-	    		<div class="col-sm-12 tenpxmarg" >
-		      		<input data-bind='value: missionViewModel().newMissionName'/>
-		      	</div>
-	    		<button type="button" data-bind="click: missionViewModel().addNewMission">Ajouter</button>
+	    		
+		        <select class="form-control tenpxmarg" data-bind='options: jobViewModel().jobs, value: jobViewModel().selectedJob, optionsText: "name", optionsCaption: "Select..."'> </select>
+		     	
+	      		<input class="form-control tenpxmarg" placeholder="Mission..." data-bind='value: missionViewModel().newMissionName'/>
+		      	<button class="btn btn-primary form-control tenpxmarg" type="button" data-bind="click: missionViewModel().addNewMission">Ajouter</button>
 	    		<p>
-	    		<div >Liste des missions:</div> <p>
-                <div data-bind='foreach: jobViewModel().selectedJob().missions'> 
-                	 
-                	<span data-bind="text: name" ></span>
-                	<input type="checkbox" disabled data-bind="checked: isDefault" />
-                	<p>
-                </div>
+	    		                
+                <table class="table table-striped table-bordered">
+	    			<thead>
+				        <tr>
+				        	<th class="col-xs-10">Liste des missions</th>
+				        </tr>
+				        
+				    </thead>
+	                <tbody data-bind='foreach: jobViewModel().selectedJob().missions'> 
+	                	 
+	                	
+	                	<tr>
+				            <td class="col-xs-10" data-bind="text: name"></td>
+				            <td class="col-xs-1">
+				            	<input type="checkbox" disabled data-bind="checked: isDefault" />
+			            	</td>
+				            <td class="col-xs-1">
+				        		<button class="btn btn-default" type="button" data-bind="click: $parent.missionViewModel().setDefault, disable :isDefault">Défaut</button>
+			      			</td>
+				        </tr>
+	                </tbody>
+                </table>
+                
 		     </div>
 	    
 	    <!-- /ko -->
@@ -102,18 +132,34 @@
 	    <!-- ko if: selectedAction().id == 'addJob' -->
 	    	<div class="col-sm-12 tenpxmarg" >
 	    		
-	    		<div class="col-sm-12 tenpxmarg" >
-		      		<input data-bind='value: jobViewModel().newJobName'/>
-		      	</div>
-	    		<button type="button" data-bind="click: jobViewModel().addNewJob">Ajouter</button>
+    			<input class="form-control" placeholder="Job..." data-bind='value: jobViewModel().newJobName'/>
+		      	
+	    		<button class="tenpxmarg btn btn-primary form-control"  type="button" data-bind="click: jobViewModel().addNewJob">Ajouter</button>
 	    		<p>
-	    		<div >Liste des jobs:</div> <p>
-                <div data-bind='foreach: jobViewModel().jobs'> 
-                	 
-                	<span data-bind="text: name" ></span>
-                	<input type="checkbox" disabled data-bind="checked: isDefault" />
-                	<p>
-                </div>
+	    		
+	    		<table class="table table-striped table-bordered">
+	    			<thead>
+				        <tr>
+				        	<th class="col-xs-10">Liste des jobs</th>
+				        </tr>
+				        
+				    </thead>
+	                <tbody data-bind='foreach: jobViewModel().jobs'> 
+	                	 
+	                	
+	                	<tr>
+				            <td class="col-xs-10" data-bind="text: name"></td>
+				            <td class="col-xs-1">
+				            	<input type="checkbox" disabled data-bind="checked: isDefault" />
+			            	</td>
+				            <td class="col-xs-1">
+				        		<button class="btn btn-default" type="button" data-bind="click: $parent.jobViewModel().setDefault, disable :isDefault">Défaut</button>
+			      			</td>
+				        </tr>
+	                </tbody>
+                </table>
+                
+                
 		     </div>
 	    
 	    <!-- /ko -->
@@ -134,20 +180,20 @@
 		      </div>
 		      
 		      <div class="col-sm-12 tenpxmarg" >
-		      	<input type="date" data-bind='date: jobDoneViewModel().currentJobDone.date'/>
+		      	<input class="form-control" type="date" data-bind='date: jobDoneViewModel().currentJobDone.date'/>
 		      </div>
 		      
 		      <div class="col-sm-12 tenpxmarg" >
-		      	<input type="number" data-bind='value: jobDoneViewModel().currentJobDone.timeSpent'/>
+		      	<input class="form-control" placeholder="Temps..." type="number" data-bind='value: jobDoneViewModel().currentJobDone.timeSpent'/>
 		      </div>
 		      
 		     <div class="col-sm-12 tenpxmarg" > 
-		      	<textarea class="form-control" rows="5" data-bind='textInput: jobDoneViewModel().currentJobDone.note'></textarea>
+		      	<textarea class="form-control" placeholder="Note..." rows="5" data-bind='textInput: jobDoneViewModel().currentJobDone.note'></textarea>
 		      </div>
 		     
-		    
-		      <button type="button" data-bind="click: jobDoneViewModel().sendJobTime">OK</button>
-		     
+		    <div class="col-sm-12 tenpxmarg" > 
+		      <button  class="btn btn-primary form-control"  type="button" data-bind="click: jobDoneViewModel().sendJobTime">OK</button>
+		     </div>
 	     <!-- /ko --> 
     </div>
     <!-- jQuery -->
