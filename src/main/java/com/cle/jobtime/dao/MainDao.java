@@ -44,4 +44,6 @@ public interface MainDao {
 	public UUID editTaskType(TaskType taskType);
 
 	public TaskType getTaskType(UUID uid);
+
+	public List<Project> getProjectWithJobDoneOn(Date date);
 }

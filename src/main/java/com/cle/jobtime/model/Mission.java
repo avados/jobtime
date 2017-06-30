@@ -17,7 +17,9 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 
 
@@ -40,11 +42,13 @@ public class Mission implements Serializable {
 	
 	@ManyToOne
     @JoinColumn(name="job_id", nullable=false)
+	@JsonBackReference
     private Job job;
 	
 	@OneToMany(mappedBy="mission")
 	@JsonView(JsonViews.JobMissionProject.class)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.PERSIST})
+	@JsonManagedReference
 	public List<Project> projects = new ArrayList<Project>();
 	
 	

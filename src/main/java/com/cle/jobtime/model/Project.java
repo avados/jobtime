@@ -14,14 +14,29 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.Filters;
+import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.Type;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Embeddable
 @Entity
 @Table(name = "project")
+@JsonIdentityInfo(generator =  ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@FilterDef(name="jobDoneFilter", parameters={
+		@ParamDef( name="oneDay", type="date" )
+})
+//@Filters( {
+//    @Filter(name="jobDoneFilter", condition=" date = :oneDay ")
+//} )
 public class Project implements Serializable{
 
 	@JsonView(JsonViews.JobMissionProject.class)
@@ -33,10 +48,13 @@ public class Project implements Serializable{
 	@OneToMany(mappedBy="project")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.PERSIST})
 	@JsonView(JsonViews.All.class)
+	@JsonManagedReference
+	@Filter(name="jobDoneFilter", condition=" date = :oneDay ")
 	private List<JobDone> jobdones = new ArrayList<JobDone>();
 
 	@ManyToOne
     @JoinColumn(name="mission_id", nullable=false)
+	@JsonBackReference
     private Mission mission;
 	
 	@Id

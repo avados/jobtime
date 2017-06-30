@@ -29,4 +29,6 @@ public interface MainService {
 	String getTaskTypeAsJson();
 
 	TaskType editTaskType(TaskType taskType) throws RestException;
+
+	String getJobDoneOnAsJson(Date date);
 }

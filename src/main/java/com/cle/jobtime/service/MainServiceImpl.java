@@ -172,6 +172,27 @@ public class MainServiceImpl implements MainService {
 		uid = dao.editJob(_job);
 	}
 
+
+	@Override
+	public String getJobDoneOnAsJson(Date date)
+	{
+		ObjectMapper om = new ObjectMapper();
+		//om.disable(MapperFeature.DEFAULT_VIEW_INCLUSION);
+		String s = "{}";
+		try
+		{
+			//ici c'est foireux, il faut utiliser une vue pour ne pas recuperer les projet dans les jobdone
+			//s = om.writerWithView(com.cle.jobtime.model.JsonViews.JobMissionProject.class).writeValueAsString(getJobs());
+			s = om.writeValueAsString(dao.getProjectWithJobDoneOn(date));
+		}
+		catch (JsonProcessingException e)
+		{
+			logger.debug("getTaskType",e);
+		}
+		return s;	
+	}
+
+	
 	@Override
 	public String getTaskTypeAsJson()
 	{
@@ -186,7 +207,8 @@ public class MainServiceImpl implements MainService {
 		{
 			logger.debug("getTaskType",e);
 		}
-		return s;	}
+		return s;	
+	}
 
 	@Override
 	public void addJobDone(JobDone jd) throws RestException

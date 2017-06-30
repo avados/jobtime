@@ -10,15 +10,30 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.Filters;
+import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.Type;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+//@FilterDef(name="jobDoneFilter", parameters={
+//		@ParamDef( name="oneDay", type="date" )
+//})
+//@Filters( {
+//    @Filter(name="jobDoneFilter", condition=" date = :oneDay ")
+//} )
 @Embeddable
 @Entity
 @Table(name = "jobdone")
+@JsonIdentityInfo(generator =  ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class JobDone implements Serializable{
 
 	@Id
@@ -42,7 +57,8 @@ public class JobDone implements Serializable{
 	
 	@ManyToOne
     @JoinColumn(name="project_id", nullable=false)
-//	@JsonIgnore
+//	@JsonIdentityReference(alwaysAsId = true)
+	@JsonBackReference
     private Project project;
 	
 	public JobDone() {

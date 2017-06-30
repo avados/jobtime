@@ -2,7 +2,9 @@ package com.cle.jobtime.controllers;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +14,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -66,6 +69,28 @@ public class MainController {
 		return null;		
 	}
 	
+	
+	@RequestMapping(value = "/getDateJobDone/{sdate}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<String> getDateJobDone(HttpEntity<String> httpEntity, WebRequest request, @PathVariable String sdate)
+	{
+		try
+		{	  
+			DateFormat format = new SimpleDateFormat("ddMMyyyy", Locale.getDefault());
+			Date date = format.parse(sdate);
+			
+			String dateJobTimes = mainService.getJobDoneOnAsJson(date);
+			
+			return new ResponseEntity<String>(dateJobTimes, HttpStatus.OK);
+		}
+		catch (Exception e)
+		{
+			logger.debug("getTaskType",e );
+		}
+		
+		return null;		
+	}
+	
+	
 	@RequestMapping(value = "/getTaskType", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<String> getTaskType(HttpEntity<String> httpEntity, WebRequest request)
 	{
@@ -92,7 +117,6 @@ public class MainController {
 
 //			final DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 //			mapper.setDateFormat(df);
-			
 			// String s = mapper.writeValueAsString(user);
 			JobDone jd = mapper.readValue(httpEntity.getBody(), JobDone.class);
 			

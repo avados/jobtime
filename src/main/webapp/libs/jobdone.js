@@ -23,6 +23,17 @@ var JobDoneViewModel = function(selectedProject, selectedTaskType)
 	};
 
 	self.currentJobDone = new jobdoneModel();
+	self.currentDisplayedDate = ko.observable(moment(self.currentJobDone.date()).format('DD MMM YYYY'));
+
+	self.currentJobDone.date.subscribe(function(newValue)
+	{
+		if (!isNaN(newValue.getDate()))
+		{
+			self.currentDisplayedDate(moment(self.currentJobDone.date()).format('DD MMM YYYY'));
+			self.getDateJobTime();
+		}
+
+	})
 
 	self.sendJobTime = function()
 	{
@@ -40,7 +51,7 @@ var JobDoneViewModel = function(selectedProject, selectedTaskType)
 			{
 				self.currentJobDone.note(undefined);
 				self.currentJobDone.timeSpent(undefined);
-
+				self.getDateJobTime();
 				console.log("ok");
 			},
 			error : function(response, status, xhr)
@@ -51,4 +62,43 @@ var JobDoneViewModel = function(selectedProject, selectedTaskType)
 		});
 
 	}
+
+	self.dateJobTime = ko.observableArray([]);
+	self.currentDisplayedTotalTime = ko.computed(function()
+	{
+		var _temp = 0;
+		for (pi = 0; pi < self.dateJobTime().length; pi++)
+		{
+			for (jdi = 0; jdi < self.dateJobTime()[pi].jobdones.length; jdi++)
+			{
+				_temp += self.dateJobTime()[pi].jobdones[jdi].timeSpent;
+			}
+
+		}
+		return _temp;
+	}, this);
+	self.getDateJobTime = function()
+	{
+		$.ajax({
+			type : "GET",
+			dataType : "json",
+			contentType : "application/json",
+
+			url : _host + "/getDateJobDone/" + moment(self.currentJobDone.date()).format('DDMMYYYY'),
+			data : ko.toJSON(self.currentJobDone),
+			success : function(response, status, xhr)
+			{
+				self.dateJobTime(response)
+				console.log("ok");
+			},
+			error : function(response, status, xhr)
+			{
+				console.log("ko");
+				alert(response.responseJSON.message);
+			},
+		});
+
+	}
+	// TODO use an init event
+	self.getDateJobTime();
 }

@@ -58,10 +58,7 @@ var AppViewModel = function()
 
 			success : function(response, status, xhr)
 			{
-
 				msgPublisher.notifySubscribers(response, 'taskTypeFromServer');
-
-				console.log(response)
 			},
 			error : function(response, status, xhr)
 			{

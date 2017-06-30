@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.hibernate.Criteria;
+import org.hibernate.Filter;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
@@ -87,6 +88,39 @@ public class MainDaoImpl implements MainDao {
 		return jd.getId() ;
 	}
 
+	@Override
+	public List<Project> getProjectWithJobDoneOn(Date date)
+	{
+		
+		//here this filter is to keep only jobdone that exists for a day
+		final Filter filter = getSession().enableFilter("jobDoneFilter");
+	    filter.setParameter("oneDay", date);
+	    filter.validate();
+	    //here the filter in the query is just to remove projects having no jobdone for the day
+	    Query createQuery = getSession().createQuery("from Project p where (select count(jd2.id) from JobDone jd2 where jd2.project = p.id and date = :_date ) > 0");
+	    createQuery.setDate("_date", date);
+	    
+	    List<Project> list = createQuery.list();
+	    
+//	    Query createQuery = getSession().createQuery("select jd from JobDone jd join fetch jd.project p where jd.timeSpent =1 ");
+//		List<JobDone> list = createQuery.list();
+//		Project project = list.get(0).getProject();
+//		Criteria c = getSession().createCriteria(JobDone.class);
+//		
+//		c.add(Restrictions.eq("date", date));
+//		c.addOrder(Order.asc("date"));
+	    //TODO see if we can remove the force fetch, do not remove otherwise the disablefilter wont stop jackson to 
+	    for(Project p : list)
+		{
+			for(JobDone jd : p.getJobdones())
+			{
+			}
+		}
+		getSession().disableFilter("jobDoneFilter");
+		
+		return list;// c.list();
+	}
+	
 	@Override
 	public List<JobDone> getJobDoneSince(Date firstDayOfWeekDate)
 	{

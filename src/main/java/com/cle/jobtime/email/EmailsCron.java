@@ -81,15 +81,17 @@ public class EmailsCron {
 			}
 			catch (Exception e)
 			{
+				logger.info("Invalid email: ", e);
 				logger.error("Invalid email: ", e);
 			}
 
 		}
 		catch (Exception e)
 		{
+			logger.info("Error when sending follow up email", e);
 			logger.error("Error when sending follow up email", e);
 		}
-
+		logger.info("Stoping Cron Email Job at: " + timeFormat.format(new Date()));
 	}
 
 	private String getEmailText()
