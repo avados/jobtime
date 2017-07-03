@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
+import com.cle.jobtime.email.EmailsCron;
 import com.cle.jobtime.model.Job;
 import com.cle.jobtime.model.JobDone;
 import com.cle.jobtime.model.Mission;
@@ -241,6 +242,26 @@ public class MainController {
 			logger.debug("editTaskType",e );
 		}
 		return new ResponseEntity<String>("{}", HttpStatus.BAD_REQUEST);
+	}
+	
+	@Autowired
+	EmailsCron ec ;
+	
+	@RequestMapping(value = "/testEmail", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<String> testEmail(HttpEntity<String> httpEntity, WebRequest request)
+	{
+		try
+		{	  
+			
+			ec.reportCurrentTime();
+			
+			return new ResponseEntity<String>("{ status: ok }", HttpStatus.OK);
+		}
+		catch (Exception e)
+		{
+			logger.debug("getTaskType",e );
+			return new ResponseEntity<String>("{ status: ko  }", HttpStatus.OK);
+		}		
 	}
 	
 }

@@ -35,7 +35,6 @@ import org.springframework.web.servlet.view.JstlView;
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = "com.cle.jobtime")
-
 public class AppConfig extends WebMvcConfigurerAdapter {
 
 	private static final Logger logger = LoggerFactory.getLogger(AppConfig.class);
