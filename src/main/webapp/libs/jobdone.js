@@ -84,7 +84,7 @@ var JobDoneViewModel = function(selectedProject, selectedTaskType)
 			dataType : "json",
 			contentType : "application/json",
 
-			url : _host + "/getDateJobDone/" + moment(self.currentJobDone.date()).format('DDMMYYYY'),
+			url : _host + "/getDateJobDone/" + moment(self.currentJobDone.date()).format('DDMMYYYY').toString(),
 			data : ko.toJSON(self.currentJobDone),
 			success : function(response, status, xhr)
 			{
