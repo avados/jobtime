@@ -79,12 +79,13 @@ var JobDoneViewModel = function(selectedProject, selectedTaskType)
 	}, this);
 	self.getDateJobTime = function()
 	{
+		var _date = moment(self.currentJobDone.date()).format('DDMMYYYY').toString();
 		$.ajax({
 			type : "GET",
 			dataType : "json",
 			contentType : "application/json",
 
-			url : _host + "/getDateJobDone/" + moment(self.currentJobDone.date()).format('DDMMYYYY').toString(),
+			url : _host + "/getDateJobDone/" + _date,
 			data : ko.toJSON(self.currentJobDone),
 			success : function(response, status, xhr)
 			{
